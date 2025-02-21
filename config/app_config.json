@@ -1,6 +1,0 @@
-{
-    "models_dir": "..\\models",
-    "llama_server_path": "..\\llama-b4735-bin-win-cuda-cu12.4-x64\\llama-server.exe",
-    "window_width": 1068,
-    "window_height": 901
-}
