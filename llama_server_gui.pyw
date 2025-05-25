@@ -116,6 +116,18 @@ DEFAULT_PARAMS = {
                     "min": 0
                 }
             },
+            # 多模态投影文件路径
+            "mmproj": {
+                "default": "",
+                "type": "string",
+                "desc": "多模态投影模型路径"
+            },
+            # 是否禁用多模态投影加载到GPU
+            "no-mmproj-offload": {
+                "default": False,
+                "type": "boolean", 
+                "desc": "禁用多模态投影加载到GPU"
+            },
 
             # 模型备注信息，类型为字符串
             "model_remark": {
@@ -276,6 +288,8 @@ PARAM_PREFIX_MAP = {
     "embd-bge-small-en-default": ["--embd-bge-small-en-default"],
     "embd-e5-small-en-default": ["--embd-e5-small-en-default"],
     "embd-gte-small-default": ["--embd-gte-small-default"],
+    "mmproj": ["--mmproj"],
+    "no-mmproj-offload": ["--no-mmproj-offload"],
 }
 
 class LlamaServerGUI:
@@ -590,7 +604,7 @@ class LlamaServerGUI:
                 return [] # 目录创建失败，返回空列表
         if os.path.isdir(models_dir): # 确保模型目录是一个目录
             for filename in os.listdir(models_dir):
-                if filename.endswith(".gguf"):
+                if filename.endswith(".gguf") and not filename.startswith("mmproj-"):
                     models.append(filename)
         else:
             messagebox.showerror("目录错误", f"模型目录 '{models_dir}' 不是一个有效的目录")
@@ -850,6 +864,8 @@ class LlamaServerGUI:
 
         # 添加参数
         for param_name, param_value in config_dict.items():
+            # print("param_name:", param_name) # 打印参数名，方便调试
+            # print("param_value:", param_value) # 打印参数值，方便调试
             # 忽略模型备注信息
             if param_name == "model_remark":
                 continue
